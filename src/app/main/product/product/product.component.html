@@ -1,0 +1,171 @@
+<!-- Content Header (Page header) -->
+<section class="content-header" style="padding-top: 20px;">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Quản lý sản phẩm</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <a (click)="createModal()" class="btn btn-success btn-xs" style="padding: 10px;color: white;font-size: 13px;" >
+            <i class="fa fa-plus"></i>&nbsp;Thêm sản phẩm
+          </a>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body"> 
+            <p-panel header="Tìm kiếm">
+              <form class="form-horizontal" role="form" [formGroup]="formsearch"  (ngSubmit)="search()">
+               <div class="form-group" >
+                 <label class="col-sm-6 control-label no-padding-right"> Tên sản phẩm </label>
+                 <div class="col-sm-12">
+                   <input formControlName="tencaycanh"  type="text" placeholder="Tên sản phẩm" />
+                 </div>
+               </div>
+               <div class="form-group">
+                 <label class="col-sm-1 control-label no-padding-right"></label>
+                 <div class="col-sm-12">
+                   <button (click)="search()" class="btn btn-sm btn-primary " style="float:right;margin-top: -20px;background: #007bff;
+                   border: none;">Tìm kiếm</button>
+                 </div>
+               </div>
+             </form> 
+              </p-panel>
+            <p-table selectionMode="single" [value]="products" >
+              <ng-template pTemplate="header">
+                <tr >
+                  <th  style="background: #28a745;color: white;">STT</th>
+                  <th style="background: #28a745;color: white;">Tên sản phẩm</th>
+                  <th style="background: #28a745;color: white;">Hình ảnh</th>
+                  <th style="background: #28a745;color: white;">Giá</th>
+                  <th style="background: #28a745;color: white;">Số lượng</th>
+                  <th style="background: #28a745;color: white;">Tác vụ</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item  let-i="rowIndex">
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ item.tencaycanh }}</td>
+                  <td><img src="{{ item.hinhanh }}" style="width: 60px; height: 60px;"></td>
+                  <td>{{ item.gia.toLocaleString('vi', {style : 'currency', currency : 'VND'})}}</td>
+                  <td>{{ item.soluong }}</td>
+                  <td>
+                    <div>
+                      <button title="" style="border: none; background: none;" class="btn btn-xs btn-white btn-default"  (click)="openUpdateModal(item)">  
+                        <i class="ace-icon fa fa-edit" style="color:rgb(40, 82, 218);"></i>
+                      </button>
+                      <button title="" style="border: none; background: none;" class="btn btn-xs btn-white btn-default" (click)="onDelete(item)">
+                        <i class="ace-icon fa fa-trash" style="color: red;"></i>
+                      </button>
+                    </div>  
+                  </td>
+                </tr>
+              </ng-template>
+             </p-table>
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer" style="background: white;">
+            <nav aria-label="Contacts Page Navigation" style="float: right;">
+              <ngb-pagination [collectionSize]="totalRecords" [pageSize]="pageSize" [(page)]="page" [maxSize]="10" [rotate]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+<div *ngIf="showUpdateModal" id="createProductModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg full-height-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4  *ngIf="isCreate" class="modal-title">Nhập thông tin sản phẩm</h4>
+        <h4 *ngIf="!isCreate" class="modal-title">Sửa thông tin sản phẩm</h4>
+      </div>
+      <form *ngIf="doneSetupForm" [formGroup]="formdata"  (ngSubmit)="onSubmit(formdata.value)" class="form-horizontal utehy-form">
+        <div class="modal-body no-padding">
+          <div class="form-group"  style="width:410px; float:left">
+            <label class="col-sm-5 control-label no-padding-right"> Tên sản phẩm(<span style="color: red;">*</span>)</label>
+            <div class="col-sm-11">
+              <input type="text" placeholder="Tên sản phẩm" formControlName="tencaycanh"/>
+              <div *ngIf="submitted && f.tencaycanh.errors" class="invalid-feedback">
+                <div *ngIf="f.tencaycanh.errors.required">Tên sản phẩm là bắt buộc</div>
+              </div>
+            </div>
+            <label class="col-sm-4 control-label no-padding-right"> Loại sản phẩm</label>
+            <div class="col-sm-9">
+              <select formControlName="maloai" class="col-sm-12" style="height: 40px;
+              border: 1px solid #ced4da;">
+                <ng-container *ngFor="let m of types">
+                <option [value]="m.maloai">{{m.tenloai}}</option>
+              </ng-container>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="width:350px; float:left">
+            <label class="col-sm-6 control-label no-padding-right"> Giá</label>
+            <div class="col-sm-9">
+              <input type="text" formControlName="gia" placeholder="Giá" />
+            </div>
+            <label class="col-sm-6 control-label no-padding-right"> Số lượng</label>
+            <div class="col-sm-7">
+              <input type="number" formControlName="soluong" placeholder="Số lượng" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label no-padding-right"> Chiều cao</label>
+            <div class="col-sm-6">
+              <input type="text" formControlName="chieucao" placeholder="Chiều cao" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label no-padding-right"> Ảnh sản phẩm</label>
+            <div class="col-sm-12">
+              <p-fileUpload #file_image mode="advanced" [showUploadButton]="false" cancelLabel="Hủy" chooseLabel ="Chọn ảnh"   multiple="false" accept="image/*" maxFileSize="1000000">
+                  <ng-template pTemplate="content">
+                      <img *ngIf="product && product.hinhanh" style="height: 100px;width: 100px;" [src]="product.hinhanh">
+                  </ng-template>
+            </p-fileUpload>
+            </div>
+          </div>
+          <div class="form-group" >
+            <label class="col-sm-2 control-label no-padding-right"> Cách chăm sóc</label>
+            <div class="col-sm-12">
+              <textarea class="col-sm-12" style="height: 200px;border: 1px solid #ced4da;" type="text" formControlName="cachchamsoc" placeholder="Cách chăm sóc" ></textarea>
+            </div>
+            <label class="col-sm-2 control-label no-padding-right"> Ý nghĩa</label>
+            <div class="col-sm-12">
+              <textarea class="col-sm-12" style="height: 200px;border: 1px solid #ced4da;" type="text" formControlName="ynghia" placeholder="Ý nghĩa" ></textarea>
+            </div>
+            <label class="col-sm-2 control-label no-padding-right"> Mô tả</label>
+            <div class="col-sm-12">
+              <textarea class="col-sm-12" style="height: 200px;border: 1px solid #ced4da;" type="text" formControlName="mota" placeholder="Mô tả" ></textarea>
+            </div>
+          </div>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" (click)="Reset()">
+          <i class="fa fa-bell"></i> Làm mới
+        </button>
+        <button type="submit" class="btn btn-success btn-sm btn-submit">
+          <i class="fa fa-save"></i> Đồng ý
+        </button>
+        <button type="button" class="btn btn-default btn-sm" (click)="closeModal()">
+          <i class="fa fa-times"></i> Đóng lại
+        </button>
+      </div>
+    </form>  
+    </div>
+  </div>
+</div>

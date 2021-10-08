@@ -1,0 +1,124 @@
+<!-- Content Header (Page header) -->
+<section class="content-header" style="padding-top: 20px;">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Quản lý loại sản phẩm</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <a (click)="createModal()" class="btn btn-success btn-xs" style="padding: 10px;color: white;font-size: 13px;" >
+            <i class="fa fa-plus"></i>&nbsp;Thêm loại sản phẩm
+          </a>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body"> 
+            <p-panel header="Tìm kiếm">
+              <form class="form-horizontal" role="form" [formGroup]="formsearch"  (ngSubmit)="search()">
+               <div class="form-group" >
+                 <label class="col-sm-6 control-label no-padding-right"> Tên loại </label>
+                 <div class="col-sm-12">
+                   <input formControlName="tenloai"  type="text" placeholder="Tên loại" />
+                 </div>
+               </div>
+               <div class="form-group">
+                 <label class="col-sm-1 control-label no-padding-right"></label>
+                 <div class="col-sm-12">
+                   <button (click)="search()" class="btn btn-sm btn-primary " style="float:right;margin-top: -20px;background: #007bff;
+                   border: none;">Tìm kiếm</button>
+                 </div>
+               </div>
+             </form> 
+              </p-panel>
+            <p-table selectionMode="single" [value]="types" >
+              <ng-template pTemplate="header">
+                <tr >
+                  <th  style="background: #28a745;color: white;">STT</th>
+                  <th style="background: #28a745;color: white;">Tên loại</th>
+                  <th style="background: #28a745;color: white;">Mô tả</th>
+                  <th style="background: #28a745;color: white;">Tác vụ</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item  let-i="rowIndex">
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ item.tenloai }}</td>
+                  <td>{{ item.mota }}</td>
+                  <td>
+                    <div>
+                      <button title="" style="border: none; background: none;" class="btn btn-xs btn-white btn-default"  (click)="openUpdateModal(item)">  
+                        <i class="ace-icon fa fa-edit" style="color:rgb(40, 82, 218);"></i>
+                      </button>
+                      <button title="" style="border: none; background: none;" class="btn btn-xs btn-white btn-default" (click)="onDelete(item)">
+                        <i class="ace-icon fa fa-trash" style="color: red;"></i>
+                      </button>
+                    </div>  
+                  </td>
+                </tr>
+              </ng-template>
+             </p-table>
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer" style="background: white;">
+            <nav aria-label="Contacts Page Navigation" style="float: right;">
+              <ngb-pagination [collectionSize]="totalRecords" [pageSize]="pageSize" [(page)]="page" [maxSize]="10" [rotate]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+<div *ngIf="showUpdateModal" id="createTypeModal" class="modal fade" role="dialog">
+<div class="modal-dialog modal-lg full-height-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4  *ngIf="isCreate" class="modal-title">Nhập thông tin loại sản phẩm</h4>
+      <h4 *ngIf="!isCreate" class="modal-title">Sửa thông tin loại sản phẩm</h4>
+    </div>
+    <form *ngIf="doneSetupForm" [formGroup]="formdata"  (ngSubmit)="onSubmit(formdata.value)" class="form-horizontal utehy-form">
+      <div class="modal-body no-padding">
+        <div class="form-group">
+          <label class="col-sm-8 control-label no-padding-right"> Tên loại sản phẩm(<span style="color: red;">*</span>)</label>
+          <div class="col-sm-12">
+            <input type="text" placeholder="Tên loại sản phẩm" formControlName="tenloai"/>
+            <div *ngIf="submitted && f.tenloai.errors" class="invalid-feedback">
+              <div *ngIf="f.tenloai.errors.required">Tên loại sản phẩm là bắt buộc</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" >
+          <label class="col-sm-12 control-label no-padding-right"> Mô tả</label>
+          <div class="col-sm-12">
+            <textarea class="col-sm-12" style="height: 200px;border: 1px solid #ced4da;" type="text" formControlName="mota" placeholder="Mô tả" ></textarea>
+          </div>
+        </div> 
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default btn-sm" (click)="Reset()">
+        <i class="fa fa-bell"></i> Làm mới
+      </button>
+      <button type="submit" class="btn btn-success btn-sm btn-submit">
+        <i class="fa fa-save"></i> Đồng ý
+      </button>
+      <button type="button" class="btn btn-default btn-sm" (click)="closeModal()">
+        <i class="fa fa-times"></i> Đóng lại
+      </button>
+    </div>
+  </form>  
+  </div>
+</div>
+</div>

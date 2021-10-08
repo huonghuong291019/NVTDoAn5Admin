@@ -1,0 +1,86 @@
+.p-datatable {
+    position: relative;
+    margin-top: 30px;
+}
+.p-component {
+  font-size: 15px;
+}
+.form-group  { 
+    margin-bottom: 8px !important;
+}
+.p-datatable .p-datatable-thead > tr > th { 
+    padding: 0.8rem 1rem !important
+}
+.p-datatable .p-datatable-thead > tr > td { 
+    padding: 0.8rem 1rem !important
+}
+.btn-group, .btn-group-vertical {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+.action-col .btn {
+    background-color: transparent !important;
+    padding: 5px 10px 5px 10px;
+    border-width: 0;
+    border-right-width: 1px;
+  }
+.action-col button>i {
+    color: #6FB3E0;
+  }
+.action-col .btn:last-child {
+    border-right-width: 0 !important;
+  }
+.no-margin {
+    margin: 0!important;
+}
+.nav-search { 
+    right: 35px !important;
+    padding-top: 30px;
+}
+.utehy-form {
+    padding-top: 8px;
+}
+.form-horizontal .form-group {
+    margin-left: 0 !important; 
+    margin-right: 0 !important;
+}
+input { 
+    width: 100%;
+}
+.p-inputtext {
+  font-size: 15px;
+}
+.invalid-feedback {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+/* You can add global styles to this file, and also import other style files */
+.content-wrapper .app-content.content {
+    padding: 0 .5rem;
+  }
+  
+  a + a {
+    margin-left: 3px;
+  } 
+  span{
+    font-size: 15px;
+  }
+  th{
+    font-size:15px;
+  }
+  td{
+    font-size: 15px;
+  }
+  input{
+    padding: 8px;
+    border: 1px solid #ced4da;
+    font-size: 15px;
+  }
+  .p-calendar {
+    display: inline-flex;
+    position: relative;
+    height: 40px;
+}

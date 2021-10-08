@@ -1,0 +1,158 @@
+<!-- Content Header (Page header) -->
+  <section class="content-header" style="padding-top: 20px;">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Quản lý người dùng</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <a (click)="createModal()" class="btn btn-success btn-xs" style="padding: 10px;color: white;font-size: 13px;" >
+              <i class="fa fa-plus"></i>&nbsp;Thêm người dùng
+            </a>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body"> 
+              <p-panel header="Tìm kiếm">
+                <form class="form-horizontal" role="form" [formGroup]="formsearch"  (ngSubmit)="search()">
+                 <div class="form-group" >
+                   <label class="col-sm-5 control-label no-padding-right"> Tài khoản </label>
+                   <div class="col-sm-5"style="position: absolute;">
+                     <input formControlName="taikhoan"  type="text" placeholder="Tài khoản" />
+                   </div>
+                   <label class="col-sm-5 control-label no-padding-right" style="margin-left: 161px;"> Họ tên</label>
+                   <div class="col-sm-5" style="margin-left: 565px;">
+                     <input formControlName="tennv"  type="text" placeholder="Họ tên" style="width: 100%;" />
+                   </div>
+                 </div>
+                 <div class="form-group">
+                   <label class="col-sm-1 control-label no-padding-right"></label>
+                   <div class="col-sm-12">
+                     <button (click)="search()" class="btn btn-sm btn-primary " style="float:right;margin-top: -20px;background: #007bff;
+                     border: none;">Tìm kiếm</button>
+                   </div>
+                 </div>
+               </form> 
+                </p-panel>
+              <p-table selectionMode="single" [value]="users" >
+                <ng-template pTemplate="header">
+                  <tr >
+                    <th  style="background: #28a745;color: white;">STT</th>
+                    <th style="background: #28a745;color: white;">Tài khoản</th>
+                    <th style="background: #28a745;color: white;">Họ và tên</th>
+                    <th style="background: #28a745;color: white;">Loại quyền</th>
+                    <th style="background: #28a745;color: white;">Tác vụ</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item  let-i="rowIndex">
+                  <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.taikhoan }}</td>
+                    <td>{{ item.tennv }}</td>
+                    <td>{{ item.role }}</td>
+                    <td>
+                      <div>
+                        <button title="" style="border: none; background: none;" class="btn btn-xs btn-white btn-default"  (click)="openUpdateModal(item)">  
+                          <i class="ace-icon fa fa-edit" style="color:rgb(40, 82, 218);"></i>
+                        </button>
+                        <button title="" style="border: none; background: none;" class="btn btn-xs btn-white btn-default" (click)="onDelete(item)">
+                          <i class="ace-icon fa fa-trash" style="color: red;"></i>
+                        </button>
+                      </div>  
+                    </td>
+                  </tr>
+                </ng-template>
+               </p-table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer" style="background: white;">
+              <nav aria-label="Contacts Page Navigation" style="float: right;">
+                <ngb-pagination [collectionSize]="totalRecords" [pageSize]="pageSize" [(page)]="page" [maxSize]="10" [rotate]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+<div *ngIf="showUpdateModal" id="createUserModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg full-height-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4  *ngIf="isCreate" class="modal-title">Nhập thông tin người dùng</h4>
+        <h4 *ngIf="!isCreate" class="modal-title">Sửa thông tin người dùng</h4>
+      </div>
+      <form *ngIf="doneSetupForm" [formGroup]="formdata"  (ngSubmit)="onSubmit(formdata.value)" class="form-horizontal utehy-form">
+        <div class="modal-body no-padding">
+          <div class="form-group">
+            <label class="col-sm-2 control-label no-padding-right"> Họ tên(<span style="color: red;">*</span>)</label>
+            <div class="col-sm-12">
+              <input type="text" placeholder="Họ tên" formControlName="tennv"/>
+              <div *ngIf="submitted && f.tennv.errors" class="invalid-feedback">
+                <div *ngIf="f.tennv.errors.required">Họ tên là bắt buộc</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="position: absolute;width: 40%;">
+            <label class="col-sm-12 control-label no-padding-left"> Tài khoản(<span style="color: red;">*</span>)</label>
+            <div class="col-sm-12">
+              <input type="text" formControlName="taikhoan" placeholder="Tài khoản" />
+              <div *ngIf="submitted && f.taikhoan.errors" class="invalid-feedback">
+                <div *ngIf="f.taikhoan.errors.required">Tài khoản là bắt buộc</div>
+              </div>
+            </div>
+            <label class="col-sm-12 control-label no-padding-right"> Loại quyền(<span style="color: red;">*</span>)</label>
+            <div class="col-sm-12">
+              <p-dropdown [options]="roles" formControlName="role" [style]="{'width':'100%'}"></p-dropdown>
+              <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
+                <div *ngIf="f.role.errors.required">Loại quyền là bắt buộc</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="padding-left: 400px;">
+            <label class="col-sm-12 control-label no-padding-right"> Mật khẩu(<span style="color: red;">*</span>)</label>
+            <div class="col-sm-12">
+              <input type="password" formControlName="matkhau" placeholder="Mật khẩu" />
+              <div *ngIf="submitted && f.matkhau.errors" class="invalid-feedback">
+                <div *ngIf="f.matkhau.errors.required">Mật khẩu là bắt buộc</div>
+                <div *ngIf="f.matkhau.errors.matkhau">Độ dài mật khẩu tối thiệu phải là 6 ký tự và phải chứa ký tự đặc biệt @#!$%&*</div>
+            </div>
+            </div>
+            <label class="col-sm-12 control-label no-padding-right"> Nhập lại mật khẩu(<span style="color: red;">*</span>)</label>
+            <div class="col-sm-12">
+              <input type="password" formControlName="nhaplaimatkhau" placeholder="Nhập lại mật khẩu" />
+              <div *ngIf="submitted && f.nhaplaimatkhau.errors" class="invalid-feedback">
+                <div *ngIf="f.nhaplaimatkhau.errors.required">Xác nhận lại mật khẩu là bắt buộc</div>
+                <div *ngIf="f.nhaplaimatkhau.errors.mustMatch">Xác thực lại mật khẩu không đúng</div>
+            </div>
+            </div>
+          </div> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" (click)="Reset()">
+          <i class="fa fa-bell"></i> Làm mới
+        </button>
+        <button type="submit" class="btn btn-success btn-sm btn-submit">
+          <i class="fa fa-save"></i> Đồng ý
+        </button>
+        <button type="button" class="btn btn-default btn-sm" (click)="closeModal()">
+          <i class="fa fa-times"></i> Đóng lại
+        </button>
+      </div>
+    </form>  
+    </div>
+  </div>
+</div>
